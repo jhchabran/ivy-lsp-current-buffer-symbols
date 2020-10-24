@@ -76,6 +76,7 @@
           (ivy-read "current buffer symbols:"
                     candidates
                     :require-match t
+                    :re-builder #'ivy--regex-plus ; Using fuzzy yields really poor choices with the symbol details
                     :action (lambda (candidate)
                               (let* ((symbol (cadr candidate))
                                      (line-col (lsp--get-line-and-col symbol))
