@@ -38,30 +38,28 @@
 (require 'lsp-mode)
 
 (defgroup ivy-lsp-current-buffer-symbols nil
-        "Select lsp workspace results scoped to current buffer"
-        :prefix "ivy-lsp-current-buffer-symbols"
-        :group 'ivy
-        :link '(url-link :tag "Github" "https://github.com/jhchabran/ivy-lsp-current-buffer-symbols"))
+  "Select lsp workspace results scoped to current buffer"
+  :prefix "ivy-lsp-current-buffer-symbols"
+  :group 'ivy
+  :link '(url-link :tag "Github" "https://github.com/jhchabran/ivy-lsp-current-buffer-symbols"))
+
 
 (defun ivy-lsp-current-buffer-symbols-jump--candidates (lsp-symbols)
-;; (defun ivy-lsp-current-buffer-symbols-jump--candidates (lsp-symbols)
   "Generate a list of candidates from LSP-SYMBOLS."
-  (let* ((max-type-width
+  (let* ((symbols-names (mapcar (lambda (h) (gethash "name" h)) lsp-symbols))
+         (max-type-width
           (cl-loop for kind in lsp--symbol-kind maximize (length (cdr kind))))
-          ;; 20);; (cl-loop for symbol in lsp-symbols maximize (length (car symbol))))
          (max-name-width
-          25)
-          ;; (cl-loop for symbol in blsp-symbols maximize (length (cadr symbol))))
+          (cl-loop for name in symbols-names maximize (length name)))
          (max-width (max (+ max-name-width 3) 25)))
-    ;; (pp max-type-width)))
     (cl-loop
      with fmt = (format "%%-%ds %%-%ds %%-%ds" max-name-width max-type-width max-width)
      for symbol in lsp-symbols
      collect
      (list (format fmt
-             (gethash "name" symbol)
-             (propertize (cdr (assq (gethash "kind" symbol) lsp--symbol-kind)) 'face 'font-lock-comment-face)
-             (propertize (gethash "detail" symbol) 'face 'font-lock-constant-face))
+                   (gethash "name" symbol)
+                   (propertize (cdr (assq (gethash "kind" symbol) lsp--symbol-kind)) 'face 'font-lock-comment-face)
+                   (propertize (gethash "detail" symbol) 'face 'font-lock-constant-face))
            symbol))))
 
 (defun ivy-lsp-current-buffer-symbols-jump ()
