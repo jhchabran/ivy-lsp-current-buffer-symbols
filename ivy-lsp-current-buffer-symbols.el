@@ -48,7 +48,7 @@
   "Generate a list of candidates from LSP-SYMBOLS."
   (let* ((symbols-names (mapcar (lambda (h) (gethash "name" h)) lsp-symbols))
          (max-type-width
-          (cl-loop for kind in lsp--symbol-kind maximize (length (cdr kind))))
+          (cl-loop for kind in lsp-symbol-kinds maximize (length (cdr kind))))
          (max-name-width
           (cl-loop for name in symbols-names maximize (length name)))
          (max-width (max (+ max-name-width 3) 25)))
@@ -58,7 +58,7 @@
      collect
      (list (format fmt
                    (gethash "name" symbol)
-                   (propertize (cdr (assq (gethash "kind" symbol) lsp--symbol-kind)) 'face 'font-lock-comment-face)
+                   (propertize (cdr (assq (gethash "kind" symbol) lsp-symbol-kinds)) 'face 'font-lock-comment-face)
                    (propertize (gethash "detail" symbol) 'face 'font-lock-constant-face))
            symbol))))
 
